@@ -1,0 +1,38 @@
+
+//    private static void createDummyData() throws Exception {
+//        String username = admin;
+//        String password = password;
+//        UserManager.signIn(username, password);
+//        Optional<User> student1 = UserManager.createUser(Richard, ric, password, Role.STUDENT, ST001);
+//        Optional<User> student2 = UserManager.createUser(Lenin, lel, password, Role.STUDENT, ST002);
+//        Optional<User> student3 = UserManager.createUser(Max, max, password, Role.STUDENT, ST003);
+//        Optional<User> staff1 = UserManager.createUser(Mark, mark, password, Role.STAFF, STF01);
+//        Optional<User> staff2 = UserManager.createUser(Rex, rex, password, Role.STAFF, STF02);
+//        Optional<User> staff3 = UserManager.createUser(Dom, dom, password, Role.STAFF, STF03);
+//
+//        BatchManager.createBatch(new batch);
+//        BatchManager.createBatch(batch 2);
+//        BatchManager.createBatch(batch 3);
+//
+//        Batch batch = BatchManager.getBatches().getFirst();
+//
+//        for (Optional<User> user : Arrays.asList(staff2, staff1)) {
+//            batch.addHandledBy(user.get());
+//        }
+//
+//        batch.addStudent((Student) student1.get());
+//
+//        LocalDate localDate = LocalDate.of(2024, 1, 1);
+//
+//        StaffAttendanceManager.addAttendance(batch, (Student) student1.get(), localDate, AttStatus.PRESENT);
+//        StaffAttendanceManager.addAttendance(batch, (Student) student1.get(), localDate.plusDays(1), AttStatus.ABSENT);
+//        StaffAttendanceManager.addAttendance(batch, (Student) student1.get(), localDate.plusDays(2), AttStatus.HOLIDAY);
+//
+//        StaffAttendanceManager.addAttendance((Staff) staff1.get(), localDate, AttStatus.PRESENT);
+//        StaffAttendanceManager.addAttendance((Staff) staff1.get(), localDate.plusDays(1), AttStatus.ABSENT);
+//        StaffAttendanceManager.addAttendance((Staff) staff1.get(), localDate.plusDays(2), AttStatus.HOLIDAY);
+//
+//        UserManager.signOut();
+//
+//    }
+
