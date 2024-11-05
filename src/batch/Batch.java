@@ -25,7 +25,7 @@ public class Batch implements Identifiable, Serializable {
     private final HashSet<User> handledBy = new HashSet<>();
     private final AttendanceBook attendanceBook = new AttendanceBook();
 
-    public Batch(String name, User admin){
+    Batch(String name, User admin){
         this.handledBy.add(admin);
         this.name = name;
         this.id = new StringID(BatchManager.getBatchRepo().size() + 1);
@@ -45,7 +45,7 @@ public class Batch implements Identifiable, Serializable {
         return name;
     }
 
-    public ArrayList<User> getStudents() {
+    ArrayList<User> getStudents() {
         return new ArrayList<>(students);
     }
 
@@ -99,7 +99,7 @@ public class Batch implements Identifiable, Serializable {
         BatchManager.getBatchRepo().saveData();
     }
 
-    public ArrayList<User> getNotHandledBy() {
+    ArrayList<User> getNotHandledBy() {
         ArrayList<User> staffsNotInBatch;
         ArrayList<User> allStaffs = UserManager.getInstance().getUsersByRoles(new Role[]{Role.STAFF, Role.ADMIN}, true);
         staffsNotInBatch = allStaffs.stream()
@@ -108,7 +108,7 @@ public class Batch implements Identifiable, Serializable {
         return staffsNotInBatch;
     }
 
-    public ArrayList<User> getStudentsNotIn(){
+    ArrayList<User> getStudentsNotIn(){
         ArrayList<User> studentsNotInBatch;
         ArrayList<User> allStudents = UserManager.getInstance().getUsersByRoles(new Role[]{ Role.STUDENT }, true);
         studentsNotInBatch = allStudents.stream()

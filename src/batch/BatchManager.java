@@ -52,13 +52,13 @@ public final class BatchManager {
 
 
 
-    public static void addBatch(Batch batch){
+    static void addBatch(Batch batch){
         if (batches.putIfAbsent(batch.getId(), batch) == null) {
             batchRepo.put(batch); // Persist the new batch to file
         }
     }
 
-    public static void createBatch(String name) throws IllegalAccessException {
+    static void createBatch(String name) throws IllegalAccessException {
         if(UserManager.getInstance().getCurrentUser().getRole() != Role.ADMIN){
             throw new IllegalAccessException("Only admins can create batch");
         }
@@ -83,7 +83,7 @@ public final class BatchManager {
         }
     }
 
-    public static ArrayList<User> getStaffsNotInBatch(ID<?> batchId) {
+    static ArrayList<User> getStaffsNotInBatch(ID<?> batchId) {
         Optional<Batch> optionalBatch = getBatch(batchId);
         if (optionalBatch.isPresent()){
             return optionalBatch.get().getNotHandledBy();
@@ -92,7 +92,7 @@ public final class BatchManager {
     }
 
 
-    public static void printStaffsNotInBatch(ID<?> batchId) {
+    static void printStaffsNotInBatch(ID<?> batchId) {
         ArrayList<User> staffsNotInBatch = getStaffsNotInBatch(batchId);
 
         if (staffsNotInBatch.isEmpty()) {
@@ -106,11 +106,11 @@ public final class BatchManager {
     }
 
 
-    public static void addHandledBy(Batch batch, User user) {
+    static void addHandledBy(Batch batch, User user) {
         batch.addHandledBy(user);
     }
 
-    public static List<User> getHandledBy(Batch batch) {
+    static List<User> getHandledBy(Batch batch) {
         return batch.getHandledBy();
     }
 
@@ -154,7 +154,7 @@ public final class BatchManager {
 
     public static void updateAttendance(Batch batch, LocalDate date, StringID userId, AttStatus status, LocalTime inTime) {
         if (!validateAuthUser(batch)) return;
-        batch.getAttendanceBook().updateAttendance(date,userId,status,inTime);
+        StudentAttendanceManager.updateAttendance(batch.getAttendanceBook(),date,userId,status,inTime);
     }
 
     public static void printAttendanceForUser(Batch batch, StringID userId) {

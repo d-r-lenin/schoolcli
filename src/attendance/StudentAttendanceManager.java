@@ -12,8 +12,6 @@ import java.time.LocalTime;
 public final class StudentAttendanceManager {
     private StudentAttendanceManager() {}
 
-
-
     public static void deleteAttendance(AttendanceBook book, User user) {
         book.deleteAttendance(user);
     }

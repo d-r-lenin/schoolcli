@@ -9,7 +9,7 @@ import java.util.Scanner;
 import utils.types.StringID;
 
 public final class IO {
-    private IO(){};
+    private IO(){}
     public static Scanner scanner = new Scanner(System.in);
 
     public static void main(String[] args) {
@@ -39,12 +39,12 @@ public final class IO {
     }
 
     public static String getString(String display) {
-        String result = "";
-        while(true) {
+        String result;
+        do {
             System.out.print(display);
             result = scanner.nextLine();
-            if (!Objects.equals(result, ""))break;
-        }
+        } while (Objects.equals(result.trim(), ""));
+
         return result;
     }
 

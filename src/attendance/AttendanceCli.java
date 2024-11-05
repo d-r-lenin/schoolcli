@@ -48,8 +48,6 @@ public class AttendanceCli extends CLI {
 
 
     private static void showAttendance() {
-        AttendanceBook book = null;
-
 
         Batch batch = BatchCli.batchInput();
 
@@ -67,8 +65,6 @@ public class AttendanceCli extends CLI {
 
 
     private static void showMyAttendance() {
-        User authUser = UserManager.getInstance().getCurrentUser();
-
         Batch batch = BatchCli.batchInput();
 
         if(batch == null){
@@ -76,9 +72,7 @@ public class AttendanceCli extends CLI {
             return;
         }
 
-
         BatchManager.showMyAttendance(batch);
-
     }
 
     private static void takeAttendance() {
