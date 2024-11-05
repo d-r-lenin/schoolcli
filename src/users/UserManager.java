@@ -16,8 +16,7 @@ public final class UserManager {
     private static final UserRepo store = new UserRepo();
     private User currentUser;
 
-    private UserManager() {
-    }
+    private UserManager() {}
 
     private static Integer getCount(){
         return UserManager.store.size();
@@ -28,7 +27,7 @@ public final class UserManager {
         if (instance == null) {
             instance = new UserManager();
             createAdmin();
-            createDummyData();
+//            createDummyData();
         }
         return instance;
     }
@@ -38,7 +37,7 @@ public final class UserManager {
         return currentUser;
     }
 
-    public static void setPassword(User user, String newPassword) {
+    static void setPassword(User user, String newPassword) {
         if(getInstance().currentUser.getRole() != Role.ADMIN){
             System.err.println("Access Denied!!");
         }
@@ -113,8 +112,6 @@ public final class UserManager {
             if (batch.getStudents().contains(user)) {
                 BatchManager.removeStudent(batch, user);
 
-                // Remove attendance for the student
-//                batch.getAttendanceBook().deleteAttendance(user);
                 BatchManager.deleteAttendance(batch, user);
             }
             if (batch.hasStaff(user)) {
