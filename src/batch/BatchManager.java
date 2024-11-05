@@ -32,9 +32,6 @@ public final class BatchManager {
         batches.putAll(convertedBatches);
     }
 
-    public static StorageRepo<Batch> getBatchRepo() {
-        return batchRepo;
-    }
 
     public static ArrayList<Batch> getBatches() {
         User authuser = UserManager.getInstance().getCurrentUser();
@@ -62,7 +59,7 @@ public final class BatchManager {
         if(UserManager.getInstance().getCurrentUser().getRole() != Role.ADMIN){
             throw new IllegalAccessException("Only admins can create batch");
         }
-        Batch batch = new Batch(name, UserManager.getInstance().getCurrentUser());
+        Batch batch = new Batch( new StringID(batchRepo.size()+1) ,name, UserManager.getInstance().getCurrentUser());
         addBatch(batch);
     }
 
@@ -165,5 +162,9 @@ public final class BatchManager {
     static void addStudent(Batch batch, User student) {
         if (!validateAuthUser()) return;
         batch.addStudent(student);
+    }
+
+    public static void saveData() {
+        batchRepo.saveData();
     }
 }
