@@ -8,17 +8,15 @@ import config.enums.Role;
 import java.util.*;
 
 
-import store.models.StorageRepo;
 import utils.types.ID;
 import utils.types.StringID;
 
 public final class UserManager {
     private static UserManager instance;
-    private static final UserRepo store = new UserRepo();;
+    private static final UserRepo store = new UserRepo();
     private User currentUser;
 
-    private UserManager() {
-    }
+    private UserManager() {}
 
     private static Integer getCount(){
         return UserManager.store.size();
@@ -29,16 +27,17 @@ public final class UserManager {
         if (instance == null) {
             instance = new UserManager();
             createAdmin();
-            createDummyData();
+//            createDummyData();
         }
         return instance;
     }
+
 
     public User getCurrentUser() {
         return currentUser;
     }
 
-    public static void setPassword(User user, String newPassword) {
+    static void setPassword(User user, String newPassword) {
         if(getInstance().currentUser.getRole() != Role.ADMIN){
             System.err.println("Access Denied!!");
         }
@@ -81,7 +80,7 @@ public final class UserManager {
 
 
 
-    public User createUser(String name, String username, String password, Role role)
+    User createUser(String name, String username, String password, Role role)
             throws IllegalAccessException{
         this.checkIfAdmin(); // throws error for unauthorized access.
 
@@ -104,7 +103,7 @@ public final class UserManager {
         return newUser;
     }
 
-    public void deleteUser(ID<?> id) throws IllegalAccessException {
+    void deleteUser(ID<?> id) throws IllegalAccessException {
         checkAuth(new Role[]{Role.ADMIN});
         User user = UserManager.getInstance().findUserById(id);
         // removing from any batch also
@@ -113,8 +112,6 @@ public final class UserManager {
             if (batch.getStudents().contains(user)) {
                 BatchManager.removeStudent(batch, user);
 
-                // Remove attendance for the student
-//                batch.getAttendanceBook().deleteAttendance(user);
                 BatchManager.deleteAttendance(batch, user);
             }
             if (batch.hasStaff(user)) {
@@ -142,10 +139,10 @@ public final class UserManager {
     }
 
     public User findUserById(ID<?> userId) {
-        return store.get(userId).orElse(null); // Use StorageRepo to find by ID
+        return findUser(userId); // Use StorageRepo to find by ID
     }
 
-    public User signIn(String username, String password) {
+    User signIn(String username, String password) {
         User foundUser = findUser(username);
         if (foundUser == null) {
             System.err.println("User not found");
@@ -193,7 +190,7 @@ public final class UserManager {
         return result;
     }
 
-    public void changePassword(String oldPassword, String newPassword) throws IllegalAccessException {
+    void changePassword(String oldPassword, String newPassword) throws IllegalAccessException {
         this.checkAuth(); // Ensure the user is authenticated
         if (!currentUser.validatePassword(oldPassword)) {
             currentUser.setPassword(newPassword); // Assuming a setter exists
@@ -202,7 +199,7 @@ public final class UserManager {
             throw new IllegalAccessException("Old password is incorrect.");
         }
     }
-    
+
     public static void saveData(){
         store.saveData();
     }
@@ -230,7 +227,6 @@ public final class UserManager {
             System.err.println("Error creating dummy data: " + e.getMessage());
         }
     }
-
 
 
 }

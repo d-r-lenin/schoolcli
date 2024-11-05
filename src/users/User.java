@@ -14,10 +14,10 @@ public class User implements Authable, Serializable {
     public final StringID id;
     private String password;
     private String name;
-    protected final String username;
+    final String username;
     private final Role role;
 
-    protected User(StringID id, String name, String username, String password, Role role) {
+    User(StringID id, String name, String username, String password, Role role) {
         this.name = name;
         this.username = username;
         this.role = role;
@@ -25,7 +25,7 @@ public class User implements Authable, Serializable {
         this.id = id;
     }
 
-    protected User(StringID id,String username, String password, Role role) {
+    User(StringID id,String username, String password, Role role) {
        this(id,"new-user",username,password, role);
     }
 
@@ -74,10 +74,10 @@ public class User implements Authable, Serializable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getName(), getUsername(), getRole());
+        return Objects.hash(getId());
     }
 
-    protected boolean setPassword(String newPassword) {
+    boolean setPassword(String newPassword) {
         if (!isPasswordSecure(newPassword)){
             System.err.println("New password Not Secure Enough!!!");
             return false;
@@ -86,7 +86,7 @@ public class User implements Authable, Serializable {
         return true;
     }
 
-    protected static String hashPassword(String password){
+    static String hashPassword(String password){
         try {
             java.security.MessageDigest md = java.security.MessageDigest.getInstance("SHA-256");
             byte[] hash = md.digest(password.getBytes(java.nio.charset.StandardCharsets.UTF_8));

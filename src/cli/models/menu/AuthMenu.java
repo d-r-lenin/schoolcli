@@ -1,6 +1,6 @@
 package cli.models.menu;
 
-import cli.users.AuthCli;
+import users.AuthCli;
 import users.UserManager;
 
 public class AuthMenu extends Menu {

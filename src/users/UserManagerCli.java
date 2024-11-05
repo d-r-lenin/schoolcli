@@ -1,12 +1,10 @@
-package cli;
+package users;
 
 import cli.models.menu.AuthMenu;
 import cli.models.menu.Menu;
 import cli.models.CLI;
 import config.enums.Role;
 
-import users.UserManager;
-import users.User;
 import utils.IO;
 import utils.types.StringID;
 

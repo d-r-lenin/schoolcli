@@ -2,7 +2,7 @@ package attendance;
 
 import batch.Batch;
 import batch.BatchManager;
-import cli.BatchCli;
+import batch.BatchCli;
 import cli.models.CLI;
 import cli.models.menu.AuthMenu;
 import cli.models.menu.Menu;

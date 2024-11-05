@@ -123,6 +123,7 @@ public class FileRepo<T extends Identifiable & Serializable> implements StorageR
     }
 
     // Save the itemStore map to a file
+    @Override
     public void saveData() {
         try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(filePath))) {
             out.writeObject(itemStore); // Serialize the map
@@ -133,15 +134,16 @@ public class FileRepo<T extends Identifiable & Serializable> implements StorageR
 
     // Load the itemStore map from a file
     @SuppressWarnings("unchecked")
+    @Override
     public void loadData() {
-//        try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(filePath))) {
-//            itemStore.putAll((Map<String, T>) in.readObject()); // Deserialize the map
-//        } catch (FileNotFoundException e) {
-//            // File not found - this can happen if no data exists yet, so we can ignore it
-//            System.err.println("File not found");
-//        } catch (IOException | ClassNotFoundException e) {
-//            e.printStackTrace();
-//        }
+        try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(filePath))) {
+            itemStore.putAll((Map<String, T>) in.readObject()); // Deserialize the map
+        } catch (FileNotFoundException e) {
+            // File not found - this can happen if no data exists yet, so we can ignore it
+            System.err.println("File not found");
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
 
     }
 }

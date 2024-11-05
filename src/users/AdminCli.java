@@ -1,14 +1,12 @@
-package cli.users;
+package users;
 
 import attendance.AttendanceCli;
-import cli.BatchCli;
-import cli.UserManagerCli;
+import batch.BatchCli;
 import attendance.StaffAttendanceCli;
 import cli.models.CLI;
 import cli.models.menu.AuthMenu;
 import cli.models.menu.Menu;
 import config.enums.Role;
-import users.UserManager;
 
 public class AdminCli extends CLI {
     private final AttendanceCli attendanceCli = new AttendanceCli(Role.ADMIN);

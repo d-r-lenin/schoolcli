@@ -1,11 +1,7 @@
 package cli;
 
 
-import cli.users.AdminCli;
-import cli.users.AuthCli;
-import cli.users.StaffCli;
-import cli.users.StudentCli;
-import users.UserManager;
+import users.*;
 
 public class MainCli {
     AuthCli authCli = new AuthCli();

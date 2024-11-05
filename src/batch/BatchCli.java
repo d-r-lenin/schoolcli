@@ -1,7 +1,5 @@
-package cli;
+package batch;
 
-import batch.Batch;
-import batch.BatchManager;
 import cli.models.menu.AuthMenu;
 import cli.models.menu.Menu;
 import cli.models.CLI;
