@@ -35,35 +35,35 @@ public class AttendanceBook implements Serializable, Identifiable {
         book.get(date).updateAttendance(userId, status, inTime);
     }
 
-    public void updateAttendance(LocalDate date, @NotNull ID<?> userId, AttStatus status, LocalTime inTime, LocalTime outTime) {
+    void updateAttendance(LocalDate date, @NotNull ID<?> userId, AttStatus status, LocalTime inTime, LocalTime outTime) {
         addAttendanceSheet(date);
         book.get(date).updateAttendance(userId, status, inTime, outTime);
     }
 
-    public void closeAttendance(LocalDate date, ID<?> userId, LocalTime outTime) {
+    void closeAttendance(LocalDate date, ID<?> userId, LocalTime outTime) {
         if (book.containsKey(date)) {
             book.get(date).closeAttendance(userId, outTime);
         }
     }
 
-    public void deleteAttendance(LocalDate date, @NotNull User user) {
+    void deleteAttendance(LocalDate date, @NotNull User user) {
         if (book.containsKey(date)) {
-            book.get(date).deleteAttendance(date, user);
+            book.get(date).deleteAttendance( user);
         }
     }
-    public void deleteAttendance(@NotNull User user) {
+    void deleteAttendance(@NotNull User user) {
         for (Map.Entry<LocalDate, AttendanceSheet> entry : book.entrySet()) {
             LocalDate date = entry.getKey();
             AttendanceSheet sheet = entry.getValue();
-            sheet.deleteAttendance(date, user);
+            sheet.deleteAttendance(user);
         }
     }
 
-    protected AttendanceSheet getAttendanceSheet(@NotNull LocalDate date) {
+    AttendanceSheet getAttendanceSheet(@NotNull LocalDate date) {
         return book.containsKey(date) ? book.get(date) : new AttendanceSheet(date);
     }
 
-    public void printSummary() {
+    void printSummary() {
         for (Map.Entry<LocalDate, AttendanceSheet> entry : book.entrySet()) {
             LocalDate date = entry.getKey();
             AttendanceSheet sheet = entry.getValue();
@@ -71,7 +71,7 @@ public class AttendanceBook implements Serializable, Identifiable {
             sheet.printSummary();
         }
     }
-    public void printSummary(LocalDate date) {
+    void printSummary(LocalDate date) {
         if (book.containsKey(date)) {
             System.out.println("Attendance for " + date);
             book.get(date).printSummary();
@@ -79,7 +79,7 @@ public class AttendanceBook implements Serializable, Identifiable {
             System.out.println("No attendance records found for " + date);
         }
     }
-    public void printSummary(@NotNull ID<?> userId) {
+    void printSummary(@NotNull ID<?> userId) {
         System.out.println("Attendance for User ID: " + userId);
         int totalPresent = 0;
         int totalAbsent = 0;
@@ -123,7 +123,7 @@ public class AttendanceBook implements Serializable, Identifiable {
         return userAttendance;
     }
 
-    public void printAttendanceForUser(@NotNull ID<?> userId) {
+    void printAttendanceForUser(@NotNull ID<?> userId) {
         Map<LocalDate, Attendance> userAttendance = getUserAttendance(userId);
         if (userAttendance.isEmpty()) {
             System.out.println("No attendance records found for User ID: " + userId);
@@ -131,14 +131,13 @@ public class AttendanceBook implements Serializable, Identifiable {
         }
         System.out.println("Attendance for User ID: " + userId);
         for (Map.Entry<LocalDate, Attendance> entry : userAttendance.entrySet()) {
-            LocalDate date = entry.getKey();
             Attendance attendance = entry.getValue();
             System.out.println(attendance);
         }
     }
 
 
-    public void printUnclosedAttendance(LocalDate date) {
+    void printUnclosedAttendance(LocalDate date) {
         AttendanceSheet sheet = getAttendanceSheet(date);
         if (sheet == null){
             System.err.println("No data found");

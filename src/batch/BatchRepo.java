@@ -1,7 +1,6 @@
 package batch;
 
 import store.models.FileRepo;
-import users.User;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -10,7 +9,7 @@ import java.io.ObjectInputStream;
 import java.util.Map;
 
 public class BatchRepo extends FileRepo<Batch> {
-    protected BatchRepo() {
+    BatchRepo() {
         super("./store/batch.db");
     }
 

@@ -21,11 +21,15 @@ public class AttendanceSheet implements Serializable {
     private static final long serialVersionUID = 5L;
 
     //                < UserId -> Attendance >
-    protected final Map<ID<?>, Attendance> sheet = new HashMap<>();
-    private LocalDate date;
+    final Map<ID<?>, Attendance> sheet = new HashMap<>();
+    private final LocalDate date;
 
     AttendanceSheet(LocalDate date) {
         this.date = date;
+    }
+
+    public LocalDate getDate() {
+        return date;
     }
 
     void updateAttendance(@NotNull ID<?> userId, AttStatus status, LocalTime inTime){
@@ -49,7 +53,7 @@ public class AttendanceSheet implements Serializable {
     }
 
 
-    void deleteAttendance(LocalDate date, @NotNull User user){
+    void deleteAttendance( @NotNull User user){
        this.sheet.remove(user.getId());
     }
 
@@ -76,62 +80,6 @@ public class AttendanceSheet implements Serializable {
         System.out.println("Total Leave: " + leave);
         System.out.println("Total Unclosed: " + unclosed);
         System.out.println("Total Holidays: " + holidays);
-    }
-    
-
-    // get present count
-    int getPresentCount() {
-        int present = 0;
-        for(Attendance attendance: this.sheet.values()){
-            if(attendance.getStatus() == AttStatus.PRESENT){
-                present++;
-            }
-        }
-        return present;
-    }
-
-    // get absent count
-    int getAbsentCount() {
-        int absent = 0;
-        for(Attendance attendance: this.sheet.values()){
-            if(attendance.getStatus() == AttStatus.ABSENT){
-                absent++;
-            }
-        }
-        return absent;
-    }
-
-    // get leave count
-    int getLeaveCount() {
-        int leave = 0;
-        for(Attendance attendance: this.sheet.values()){
-            if(attendance.getStatus() == AttStatus.LEAVE){
-                leave++;
-            }
-        }
-        return leave;
-    }
-
-    // get unclosed count
-    int getUnclosedCount() {
-        int unclosed = 0;
-        for(Attendance attendance: this.sheet.values()){
-            if(attendance.getOutTime() == null && attendance.getStatus() == AttStatus.PRESENT){
-                unclosed++;
-            }
-        }
-        return unclosed;
-    }
-
-    // get holidays count
-    int getHolidaysCount() {
-        int holidays = 0;
-        for(Attendance attendance: this.sheet.values()){
-            if(attendance.getStatus() == AttStatus.HOLIDAY){
-                holidays++;
-            }
-        }
-        return holidays;
     }
 
 
