@@ -1,15 +1,18 @@
 package batch;
 
+import attendance.AttendanceSheet;
+import attendance.StaffAttendanceManager;
+import config.enums.AttStatus;
 import config.enums.Role;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import store.models.StorageRepo;
 import users.UserManager;
-import users.models.User;
+import users.User;
 import utils.types.ID;
 import utils.types.StringID;
 
@@ -35,10 +38,10 @@ public final class BatchManager {
     }
 
     public static ArrayList<Batch> getBatches() {
-        User authuser = UserManager.getInstance().currentUser;
+        User authuser = UserManager.getInstance().getCurrentUser();
         ArrayList<Batch> res = new ArrayList<>(batches.values());
 
-        if (authuser.role != Role.STUDENT) {
+        if (authuser.getRole() != Role.STUDENT) {
             res = res.stream().filter(batch -> batch.getHandledBy().contains(authuser)).collect(Collectors.toCollection(ArrayList::new));
         } else{
             res = res.stream().filter(batch -> batch.getStudents().contains(authuser)).collect(Collectors.toCollection(ArrayList::new));
@@ -65,10 +68,10 @@ public final class BatchManager {
     }
 
     public static void createBatch(String name) throws IllegalAccessException {
-        if(UserManager.getInstance().currentUser.role != Role.ADMIN){
+        if(UserManager.getInstance().getCurrentUser().getRole() != Role.ADMIN){
             throw new IllegalAccessException("Only admins can create batch");
         }
-        Batch batch = new Batch(name, UserManager.getInstance().currentUser);
+        Batch batch = new Batch(name, UserManager.getInstance().getCurrentUser());
         addBatch(batch);
     }
 
@@ -112,7 +115,56 @@ public final class BatchManager {
     }
 
 
+    public static void addHandledBy(Batch batch, User user) {
+        batch.addHandledBy(user);
+    }
 
+    public static List<User> getHandledBy(Batch batch) {
+        return batch.getHandledBy();
+    }
 
+    public static void removeStudent(Batch batch, User user) {
+        if (!validateAuthUser()) return;
+        batch.removeStudent(user);
+    }
 
+    public static void removeHandledBy(Batch batch, User user) {
+        batch.removeHandledBy(user);
+    }
+
+    private static boolean validateAuthUser(){
+            return  UserManager.getInstance().getCurrentUser().getRole() == Role.ADMIN ;
+    }
+
+    private static boolean validateAuthUser(Batch batch){
+        return validateAuthUser() && batch.hasStaff(UserManager.getInstance().getCurrentUser());
+    }
+
+    public static void deleteAttendance(Batch batch, User user) {
+        batch.getAttendanceBook().deleteAttendance(user);
+    }
+
+    public static void printUnclosedAttendance(Batch batch, LocalDate date) {
+        batch.printUnclosedAttendance(date);
+    }
+
+    public static void closeAttendance(Batch batch, LocalDate date, StringID userId, LocalTime outTime) {
+        batch.getAttendanceBook().closeAttendance(date, userId, outTime);
+    }
+
+    public static void showMyAttendance(Batch batch){
+        batch.getAttendanceBook().printAttendanceForUser(UserManager.getInstance().getCurrentUser().getId());
+    }
+
+    public static void updateAttendance(Batch batch, LocalDate date, StringID userId, AttStatus status, LocalTime inTime) {
+        batch.getAttendanceBook().updateAttendance(date,userId,status,inTime);
+    }
+
+    public static void printAttendanceForUser(Batch batch, StringID userId) {
+        batch.getAttendanceBook().printAttendanceForUser(userId);
+    }
+
+    public static void addStudent(Batch batch, User student) {
+        batch.addStudent(student);
+    }
 }

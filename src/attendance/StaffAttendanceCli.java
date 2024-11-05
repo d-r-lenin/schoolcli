@@ -1,8 +1,5 @@
-package cli.feature.attendance;
+package attendance;
 
-import attendance.AttendanceBook;
-import attendance.AttendanceSheet;
-import attendance.StaffAttendanceManager;
 import cli.models.CLI;
 import cli.models.menu.AuthMenu;
 import cli.models.menu.Menu;
@@ -11,7 +8,7 @@ import config.enums.Role;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import users.UserManager;
-import users.models.User;
+import users.User;
 import utils.IO;
 import utils.types.StringID;
 
@@ -33,7 +30,6 @@ public class StaffAttendanceCli extends CLI {
         if (role == Role.STAFF) this.menu.addOption("Show Attendance", StaffAttendanceCli::showMyAttendance);
         if (role == Role.ADMIN) {
             this.menu.addOption("Show Attendance", StaffAttendanceCli::showAttendance);
-            this.menu.addOption("Attendance Summary", ()-> AttendanceCli.showAttendanceSummary(true));
             this.menu.addOption("Take Attendance", StaffAttendanceCli::takeAttendance);
             this.menu.addOption("Close Attendance", StaffAttendanceCli::closeAttendance);
         }
@@ -41,24 +37,15 @@ public class StaffAttendanceCli extends CLI {
 
 
 
-    static void showAttendance() {
-        AttendanceBook book = StaffAttendanceManager.getStaffBook();
-
-        if (book == null) {
-            System.err.println("No data found");
-            return;
-        }
-        UserManager.getInstance().showUsers((new Role[]{Role.STAFF}), true);
-        StringID staffId = IO.getStringId("Enter User id:");
-        book.printAttendanceForUser(staffId);
-
+    private static void showAttendance() {
+        StaffAttendanceManager.showAttendance();
     }
 
 
 
 
     static void showMyAttendance() {
-        User authUser = UserManager.getInstance().currentUser;
+        User authUser = UserManager.getInstance().getCurrentUser();
         StaffAttendanceManager.getStaffBook().printAttendanceForUser(authUser.getId());
     }
 
@@ -70,7 +57,7 @@ public class StaffAttendanceCli extends CLI {
             System.err.println("Wrong ID");
             return;
         }
-        if (user.role != Role.STAFF) {
+        if (user.getRole() != Role.STAFF) {
             System.err.println("Invalid User");
             return;
         }
@@ -86,26 +73,56 @@ public class StaffAttendanceCli extends CLI {
         LocalDate date = IO.getLocalDate("Enter Att. Date");
 
         //show all the unclosed attendance for that date.
-        AttendanceSheet sheet = StaffAttendanceManager.getStaffBook().getAttendanceSheet(date);
-        if (sheet == null){
-            System.err.println("No data found");
-            return;
-        }
-        if (sheet.getUnclosedAttendance().keySet().isEmpty()){
-            System.out.println("No Data to Close");
-            return;
-        }
-        sheet.printUnclosedAttendance();
-
+        StaffAttendanceManager.printUnclosedAttendance(date);
 
         StringID userId = IO.getStringId("Enter StaffId:");
         User user = UserManager.getInstance().findUserById(userId);
-        if (user == null || user.role != Role.STAFF) {
+        if (user == null || user.getRole() != Role.STAFF) {
             System.err.println("Wrong ID");
             return;
         }
 
         LocalTime outTime = IO.getLocalTime("Enter outTime:");
-        sheet.closeAttendance(userId, outTime);
+        StaffAttendanceManager.closeAttendance(date, userId, outTime);
     }
+
+
+    public static void showAttendanceSummary() {
+        AttendanceBook book = null;
+
+        book = StaffAttendanceManager.getStaffBook();
+
+
+        if (book == null) {
+            System.err.println("No data found");
+            return;
+        }
+
+        int option = IO.getInt("Enter Summary Type(1.Day, 2.Total, 3.User): ");
+
+        switch (option){
+            case 1 -> {
+                LocalDate date = IO.getLocalDate("Enter Date:");
+                book.printSummary(date);
+            }
+            case 2 ->{
+                book.printSummary();
+            }
+            case 3 -> {
+                UserManager.getInstance().showUsers(new Role[]{Role.STAFF});
+
+
+                StringID userId = IO.getStringId("Enter UserId:");
+                book.printSummary(userId);
+            }
+            default -> {
+                System.err.println("Invalid Option...");
+            }
+        }
+
+
+    }
+
+
+
 }

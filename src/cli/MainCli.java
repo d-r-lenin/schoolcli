@@ -5,7 +5,6 @@ import cli.users.AdminCli;
 import cli.users.AuthCli;
 import cli.users.StaffCli;
 import cli.users.StudentCli;
-import config.enums.Role;
 import users.UserManager;
 
 public class MainCli {
@@ -14,9 +13,6 @@ public class MainCli {
     StaffCli staffCli = new StaffCli();
     AdminCli adminCli = new AdminCli();
 
-    public static void main(String[] args) {
-        System.out.println("hello");
-    }
 
     public boolean start() {
         boolean isExits = false;
@@ -27,7 +23,7 @@ public class MainCli {
 
             if (UserManager.getInstance().isNotLoggedIn()) continue;
 
-            switch (UserManager.getInstance().currentUser.role) {
+            switch (UserManager.getInstance().getCurrentUser().getRole()) {
                 case STUDENT -> isExits = studentCli.start();
                 case STAFF -> isExits = staffCli.start();
                 case ADMIN -> isExits = adminCli.start();

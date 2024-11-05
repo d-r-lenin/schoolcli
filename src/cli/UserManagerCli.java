@@ -1,14 +1,12 @@
-package cli.feature;
+package cli;
 
 import cli.models.menu.AuthMenu;
 import cli.models.menu.Menu;
 import cli.models.CLI;
 import config.enums.Role;
-import exceptions.DuplicateKeyException;
-import exceptions.UnAuthorizedException;
-import exceptions.WeakPassWordException;
+
 import users.UserManager;
-import users.models.User;
+import users.User;
 import utils.IO;
 import utils.types.StringID;
 
@@ -35,7 +33,7 @@ public class UserManagerCli extends CLI {
 
     private static void deleteUser() {
         UserManager um = UserManager.getInstance();
-        if(um.currentUser.role != Role.ADMIN){
+        if(um.getCurrentUser().getRole() != Role.ADMIN){
             System.err.println("Access Denied!!!");
             return;
         }
@@ -67,7 +65,7 @@ public class UserManagerCli extends CLI {
         try {
             User user = UserManager.getInstance().createUser(name, username, password, role);
             System.out.println(user);
-        } catch (UnAuthorizedException | WeakPassWordException | DuplicateKeyException | IllegalAccessException e){
+        } catch (IllegalAccessException e){
             System.err.println(e.getMessage());
         }
     }
@@ -99,7 +97,7 @@ public class UserManagerCli extends CLI {
     }
 
     public static void resetPassword() {
-        if(UserManager.getInstance().currentUser.role != Role.ADMIN){
+        if(UserManager.getInstance().getCurrentUser().getRole() != Role.ADMIN){
             System.err.println("Access Denied!!!");
             return;
         }
@@ -119,7 +117,7 @@ public class UserManagerCli extends CLI {
         }
 
         try {
-            user.setPassword(newPassword);
+            UserManager.setPassword(user, newPassword);
             UserManager.getInstance().getStore().saveData();
         } catch (Exception e){
             System.err.println(e.getMessage());

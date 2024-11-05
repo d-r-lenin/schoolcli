@@ -1,9 +1,8 @@
 package attendance;
 
-
 import config.enums.AttStatus;
 import org.jetbrains.annotations.NotNull;
-import users.models.User;
+import users.User;
 import utils.interfaces.Identifiable;
 import utils.types.ID;
 import utils.types.StringID;
@@ -60,7 +59,7 @@ public class AttendanceBook implements Serializable, Identifiable {
         }
     }
 
-    public AttendanceSheet getAttendanceSheet(@NotNull LocalDate date) {
+    protected AttendanceSheet getAttendanceSheet(@NotNull LocalDate date) {
         return book.containsKey(date) ? book.get(date) : new AttendanceSheet(date);
     }
 
@@ -90,8 +89,8 @@ public class AttendanceBook implements Serializable, Identifiable {
         for (Map.Entry<LocalDate, AttendanceSheet> entry : book.entrySet()) {
             LocalDate date = entry.getKey();
             AttendanceSheet sheet = entry.getValue();
-            if (sheet.getSheet().containsKey(userId)) {
-                Attendance attendance = sheet.getSheet().get(userId);
+            if (sheet.sheet.containsKey(userId)) {
+                Attendance attendance = sheet.sheet.get(userId);
                 switch (attendance.getStatus()) {
                     case PRESENT -> totalPresent++;
                     case ABSENT -> totalAbsent++;
@@ -117,8 +116,8 @@ public class AttendanceBook implements Serializable, Identifiable {
         for (Map.Entry<LocalDate, AttendanceSheet> entry : book.entrySet()) {
             LocalDate date = entry.getKey();
             AttendanceSheet sheet = entry.getValue();
-            if (sheet.getSheet().containsKey(userId)) {
-                userAttendance.put(date, sheet.getSheet().get(userId));
+            if (sheet.sheet.containsKey(userId)) {
+                userAttendance.put(date, sheet.sheet.get(userId));
             }
         }
         return userAttendance;
@@ -139,4 +138,16 @@ public class AttendanceBook implements Serializable, Identifiable {
     }
 
 
+    public void printUnclosedAttendance(LocalDate date) {
+        AttendanceSheet sheet = getAttendanceSheet(date);
+        if (sheet == null){
+            System.err.println("No data found");
+            return;
+        }
+        if (sheet.getUnclosedAttendance().keySet().isEmpty()){
+            System.out.println("No Data to Close");
+            return;
+        }
+        sheet.printUnclosedAttendance();
+    }
 }

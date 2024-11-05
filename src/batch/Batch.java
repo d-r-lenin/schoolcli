@@ -1,14 +1,17 @@
 package batch;
 
 import attendance.AttendanceBook;
+import attendance.AttendanceSheet;
+import attendance.StaffAttendanceManager;
 import config.enums.Role;
 import java.io.Serial;
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.stream.Collectors;
 import users.UserManager;
-import users.models.User;
+import users.User;
 import utils.interfaces.Identifiable;
 import utils.types.StringID;
 
@@ -18,7 +21,7 @@ public class Batch implements Identifiable, Serializable {
     private static final long serialVersionUID = 3L;
 
     private final StringID id;
-    public String name;
+    protected String name;
     private final HashSet<User> students =  new HashSet<>();
     private final HashSet<User> handledBy = new HashSet<>();
     private final AttendanceBook attendanceBook = new AttendanceBook();
@@ -34,11 +37,11 @@ public class Batch implements Identifiable, Serializable {
         return id;
     }
 
-    public AttendanceBook getAttendanceBook() {
+    protected AttendanceBook getAttendanceBook() {
         return attendanceBook;
     }
 
-    public String getIdString() {
+    protected String getIdString() {
         return id.getValue();
     }
 
@@ -50,32 +53,33 @@ public class Batch implements Identifiable, Serializable {
         return new ArrayList<>(students);
     }
 
-    public void removeStudent(User student){
+    void removeStudent(User student){
         this.students.removeIf(studentIn -> studentIn.equals(student) );
         BatchManager.getBatchRepo().saveData();
     }
-    public void removeHandledBy(User user){
+
+    void removeHandledBy(User user){
         this.handledBy.removeIf(userIn -> userIn.equals(user) );
         BatchManager.getBatchRepo().saveData();
     }
 
-    public ArrayList<User> getHandledBy() {
+    ArrayList<User> getHandledBy() {
         return new ArrayList<>(handledBy);
     }
 
 
-    public void addStudent(User student){
-        if (student.role != Role.STUDENT) {
+    void addStudent(User student){
+        if (student.getRole() != Role.STUDENT) {
             System.err.println("Only Students can be added here!!!");
             return;
         }
         this.students.add(student);
-        System.out.println("added user " + student.username);
+        System.out.println("added user " + student.getUsername());
         BatchManager.getBatchRepo().saveData();
     }
 
-    public void addStudent(ArrayList<User> students){
-        if(students.stream().anyMatch(user -> user.role!=Role.STUDENT)){
+    void addStudent(ArrayList<User> students){
+        if(students.stream().anyMatch(user -> user.getRole() !=Role.STUDENT)){
             System.err.println("Only Students can be added here!!!");
             return;
         }
@@ -83,16 +87,16 @@ public class Batch implements Identifiable, Serializable {
         BatchManager.getBatchRepo().saveData();
     }
 
-    public void addHandledBy(User user){
-        if (user.role == Role.STAFF) {
+    void addHandledBy(User user){
+        if (user.getRole() == Role.STAFF) {
             this.handledBy.add(user);
-            System.out.println("added user " + user.username);
+            System.out.println("added user " + user.getUsername());
             BatchManager.getBatchRepo().saveData();
         }
 
     }
 
-    public void addHandledBy(ArrayList<User> users){
+    void addHandledBy(ArrayList<User> users){
         for (User user : users) {
             this.addHandledBy(user);
         }
@@ -142,5 +146,9 @@ public class Batch implements Identifiable, Serializable {
     //is staff in batch
     public boolean hasStaff(User staff){
         return handledBy.contains(staff);
+    }
+
+    void printUnclosedAttendance(LocalDate date) {
+       this.attendanceBook.printUnclosedAttendance(date);
     }
 }

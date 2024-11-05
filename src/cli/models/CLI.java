@@ -13,7 +13,7 @@ public abstract class CLI {
 
         protected abstract Menu createMenu();
 
-        public abstract void addOptions();
+        protected abstract void addOptions();
 
         public boolean start() {
             return menu.run();

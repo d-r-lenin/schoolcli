@@ -1,11 +1,9 @@
 package users;
 
 import store.models.FileRepo;
-import users.models.User;
 
-public class UserRepo extends FileRepo<User> {
-    public UserRepo() {
+public final class UserRepo extends FileRepo<User> {
+    UserRepo() {
         super("./store/user.db");
     }
-
 }

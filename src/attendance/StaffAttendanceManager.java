@@ -1,17 +1,21 @@
 package attendance;
 
-//import attendance.sheet.StudentAttendanceSheet;
+
 import config.enums.AttStatus;
-import users.models.User;
+import config.enums.Role;
+import users.User;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 
 import store.models.FileRepo;
+import users.UserManager;
+import utils.IO;
+import utils.types.StringID;
 
 public final class StaffAttendanceManager {
     private StaffAttendanceManager(){};
-    public static final FileRepo<AttendanceBook> staffBookRepo = new StaffAttendanceRepo();
+    static final FileRepo<AttendanceBook> staffBookRepo = new StaffAttendanceRepo();
 
     private static final AttendanceBook staffBook;
 
@@ -20,6 +24,10 @@ public final class StaffAttendanceManager {
         AttendanceBook book = staffBookRepo.getAll().values().stream().findFirst().orElse(null);
         staffBook = book == null ? new AttendanceBook() : book;
         if(book == null) staffBookRepo.put(staffBook);
+    }
+
+    static AttendanceBook getStaffBook(){
+        return staffBook;
     }
 
     public static void addAttendance(User staff, LocalDate date, AttStatus status){
@@ -32,15 +40,31 @@ public final class StaffAttendanceManager {
         staffBookRepo.saveData();
     }
 
-    public static AttendanceSheet getSheet(LocalDate date){
-        return staffBook.getAttendanceSheet(date);
-    }
-
-    public static AttendanceBook getStaffBook(){
-        return staffBook;
+    public static void deleteAttendance(User staff){
+        staffBook.deleteAttendance(staff);
+        staffBookRepo.saveData();
     }
 
 
+    public static void printUnclosedAttendance(LocalDate date) {
+        StaffAttendanceManager.staffBook.printUnclosedAttendance(date);
+    }
 
 
+    public static void closeAttendance(LocalDate date ,StringID userId, LocalTime outTime) {
+        staffBook.closeAttendance(date, userId, outTime);
+    }
+
+    public static void showAttendance() {
+        AttendanceBook book = staffBook;
+
+        if (book == null) {
+            System.err.println("No data found");
+            return;
+        }
+        UserManager.getInstance().showUsers((new Role[]{Role.STAFF}), true);
+        StringID staffId = IO.getStringId("Enter User id:");
+        book.printAttendanceForUser(staffId);
+
+    }
 }

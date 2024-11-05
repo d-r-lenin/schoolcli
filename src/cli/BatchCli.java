@@ -1,4 +1,4 @@
-package cli.feature;
+package cli;
 
 import batch.Batch;
 import batch.BatchManager;
@@ -7,7 +7,7 @@ import cli.models.menu.Menu;
 import cli.models.CLI;
 import config.enums.Role;
 import users.UserManager;
-import users.models.User;
+import users.User;
 import utils.IO;
 import utils.types.StringID;
 
@@ -86,11 +86,12 @@ public class BatchCli extends CLI {
             System.err.println("User Not Found");
             return;
         }
-        if(student.role != Role.STUDENT){
+        if(student.getRole() != Role.STUDENT){
             System.err.println("User Not a User");
             return;
         }
-        batch.addStudent(student);
+
+        BatchManager.addStudent(batch, student);
     }
 
     public static void removeStudent(){
@@ -111,7 +112,7 @@ public class BatchCli extends CLI {
             return;
         }
 
-        batch.removeStudent(student);
+        BatchManager.removeStudent(batch, student);
     }
 
     public static void addHandledBy(){
@@ -131,7 +132,8 @@ public class BatchCli extends CLI {
             return;
         }
 
-        batch.addHandledBy(user);
+
+        BatchManager.addHandledBy(batch, user);
     }
 
     public static void removeHandledBy(){
@@ -142,8 +144,8 @@ public class BatchCli extends CLI {
             return;
         }
         System.out.println("Available Users to remove:");
-        for (User user : batch.getHandledBy()) {
-            if(user.equals(UserManager.getInstance().currentUser))continue;
+        for (User user : BatchManager.getHandledBy(batch)) {
+            if(user.equals(UserManager.getInstance().getCurrentUser()))continue;
             System.out.println(user);
         }
 
@@ -153,11 +155,12 @@ public class BatchCli extends CLI {
             System.err.println("User Not Found");
             return;
         }
-        if(user.equals(UserManager.getInstance().currentUser)){
+        if(user.equals(UserManager.getInstance().getCurrentUser())){
             System.out.println("Can't remove yourself...");
             return;
         }
-        batch.removeHandledBy(user);
+
+        BatchManager.removeHandledBy(batch, user);
     }
 
 }

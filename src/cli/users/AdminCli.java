@@ -1,9 +1,9 @@
 package cli.users;
 
-import cli.feature.attendance.AttendanceCli;
-import cli.feature.BatchCli;
-import cli.feature.UserManagerCli;
-import cli.feature.attendance.StaffAttendanceCli;
+import attendance.AttendanceCli;
+import cli.BatchCli;
+import cli.UserManagerCli;
+import attendance.StaffAttendanceCli;
 import cli.models.CLI;
 import cli.models.menu.AuthMenu;
 import cli.models.menu.Menu;
@@ -27,8 +27,8 @@ public class AdminCli extends CLI {
     }
 
     @Override
-    public void addOptions() {
-        menu.addOption("About me", ()-> System.out.println(UserManager.getInstance().currentUser));
+    protected void addOptions() {
+        menu.addOption("About me", ()-> System.out.println(UserManager.getInstance().getCurrentUser()));
         menu.addOption("Change Password", UserManagerCli::changePassword);
         menu.addOption("UserMenu", userCli::start);
         menu.addOption("Batch Menu", batchCli::start);

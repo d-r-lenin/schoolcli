@@ -1,11 +1,10 @@
-package users.models;
+package users;
 
 import config.enums.Role;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.Objects;
-import users.Authable;
-import users.UserManager;
+
 import utils.types.StringID;
 
 public class User implements Authable, Serializable {
@@ -15,19 +14,19 @@ public class User implements Authable, Serializable {
     private final StringID id;
     private String password;
     private String name;
-    public final String username;
-    public final Role role;
+    private final String username;
+    private final Role role;
 
-    public User(String name, String username, String password, Role role) {
+    protected User(StringID id, String name, String username, String password, Role role) {
         this.name = name;
         this.username = username;
         this.role = role;
         this.password = hashPassword(password);
-        this.id = new StringID(UserManager.getCount() + 1);
+        this.id = id;
     }
 
-    public User(String username, String password, Role role) {
-       this("new-user",username,password, role);
+    protected User(StringID id,String username, String password, Role role) {
+       this(id,"new-user",username,password, role);
     }
 
     @Override
@@ -78,11 +77,16 @@ public class User implements Authable, Serializable {
         return Objects.hash(getId(), getName(), getUsername(), getRole());
     }
 
-    public void setPassword(String newPassword) {
+    protected boolean setPassword(String newPassword) {
+        if (!isPasswordSecure(newPassword)){
+            System.err.println("New password Not Secure Enough!!!");
+            return false;
+        }
         this.password = hashPassword(newPassword);
+        return true;
     }
 
-    public static String hashPassword(String password){
+    protected static String hashPassword(String password){
         try {
             java.security.MessageDigest md = java.security.MessageDigest.getInstance("SHA-256");
             byte[] hash = md.digest(password.getBytes(java.nio.charset.StandardCharsets.UTF_8));

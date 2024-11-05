@@ -25,7 +25,6 @@ public class Main {
     public static void createDummyData() {
         try {
             UserManager userManager = UserManager.getInstance();  // Initialize the UserManager singleton
-            userManager.createAdmin();
             String username = "admin";
             String password = "password";
             userManager.signIn(username, password);

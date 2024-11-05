@@ -11,7 +11,7 @@ public class Menu {
     private final Map<Integer, Runnable> actions = new TreeMap<>();
     private int lastAddedNumber = 0;
     public final int maxNumber = 98;
-    public String title = "Menu";
+    private String title = "Menu";
 
     public Menu(){
         this.addOption(99, "Exit/Back", ()->{});

@@ -4,36 +4,44 @@ import attendance.StaffAttendanceManager;
 import batch.Batch;
 import batch.BatchManager;
 import config.enums.Role;
-import exceptions.DuplicateKeyException;
-import exceptions.UnAuthorizedException;
+
 import java.util.*;
 
-import exceptions.WeakPassWordException;
+
 import store.models.StorageRepo;
-import users.models.User;
 import utils.types.ID;
+import utils.types.StringID;
 
 public final class UserManager {
     private static UserManager instance;
-    private final UserRepo store;
-    public User currentUser;
+    private static final UserRepo store = new UserRepo();;
+    private User currentUser;
 
     private UserManager() {
-        store = new UserRepo();
     }
 
-    public static Integer getCount(){
+    private static Integer getCount(){
         return UserManager.getInstance().getStore().size();
     }
 
-
-    public static synchronized UserManager getInstance()
+    public static UserManager getInstance()
     {
         if (instance == null) {
             instance = new UserManager();
+            createAdmin();
         }
-
         return instance;
+    }
+
+    public User getCurrentUser() {
+        return currentUser;
+    }
+
+    public static void setPassword(User user, String newPassword) {
+        if(getInstance().currentUser.getRole() != Role.ADMIN){
+            System.err.println("Access Denied!!");
+        }
+        user.setPassword(newPassword);
     }
 
     public User getSignedUser(){
@@ -52,41 +60,44 @@ public final class UserManager {
 
     public void checkAuth(Role[] roles ) throws IllegalAccessException {
         this.checkAuth();
-        if(Arrays.stream(roles).noneMatch(el -> el == currentUser.role)){
+        if(Arrays.stream(roles).noneMatch(el -> el == currentUser.getRole())){
             throw new IllegalAccessException("Access Denied");
         }
     }
 
-    public void createAdmin() {
-        if (store.getAll().isEmpty()) { // Assuming no users means no admin exists
-            User admin = new User("admin", "password", Role.ADMIN);
+    public void checkIfAdmin() throws IllegalAccessException {
+        this.checkAuth(new Role[]{Role.ADMIN});
+    }
+
+    private static void createAdmin() {
+        if (store.getAll().isEmpty()) {// Assuming no users means no admin exists
+            StringID id = new StringID(getCount()+1);
+            User admin = new User(id,"admin", "password", Role.ADMIN);
             store.put(admin);// Store the admin user using StorageRepo
             System.out.println("Admin setup complete");
         }
     }
 
-    public Integer getUserCount(){
-        return store.size();
-    }
+
 
     public User createUser(String name, String username, String password, Role role)
-            throws IllegalAccessException, DuplicateKeyException, UnAuthorizedException, WeakPassWordException {
-        this.checkAuth(); // throws error for unauthorized access.
+            throws IllegalAccessException{
+        this.checkIfAdmin(); // throws error for unauthorized access.
 
         if (isUsernameTaken(username)) {
-            throw new DuplicateKeyException("Username already taken");
+            throw new IllegalArgumentException("Username already taken");
         }
-        if (currentUser.role != Role.ADMIN) {
-            throw new UnAuthorizedException("Only Admins can create users.");
+        if (currentUser.getRole() != Role.ADMIN) {
+            throw new IllegalAccessException("Only Admins can create users.");
         }
 
         boolean isPasswordSecure = User.isPasswordSecure(password);
 
         if (!isPasswordSecure){
-            throw new WeakPassWordException("Password Must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number and one special character");
+            throw new IllegalArgumentException("Password Must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number and one special character");
         }
-
-        User newUser = new User(name, username, password, role);
+        StringID id = new StringID(getCount()+1);
+        User newUser = new User(id, name, username, password, role);
         store.put(newUser); // Store the new user
 
         return newUser;
@@ -99,16 +110,17 @@ public final class UserManager {
         List<Batch> batches = BatchManager.getBatches();
         for (Batch batch : batches) {
             if (batch.getStudents().contains(user)) {
-                batch.removeStudent(user);
+                BatchManager.removeStudent(batch, user);
 
                 // Remove attendance for the student
-                batch.getAttendanceBook().deleteAttendance(user);
+//                batch.getAttendanceBook().deleteAttendance(user);
+                BatchManager.deleteAttendance(batch, user);
             }
-            if (batch.getHandledBy().contains(user)) {
-                batch.removeHandledBy(user);
+            if (batch.hasStaff(user)) {
+                BatchManager.removeHandledBy(batch, user);
 
                 // Remove attendance for staff
-                StaffAttendanceManager.getStaffBook().deleteAttendance(user);
+                StaffAttendanceManager.deleteAttendance(user);
             }
         }
 
@@ -116,14 +128,15 @@ public final class UserManager {
     }
 
     public boolean isUsernameTaken(String username) {
-
-        return store.getAll().values().stream().anyMatch(user -> user.username.equals(username));
+        return store.getAll().values().stream().anyMatch(user -> user.getUsername().equals(username));
     }
 
     public User findUser(String username) {
+
         return store.findOneBy(Map.of("username", username));
     }
     public User findUser(ID<?> id) {
+
         return store.get(id).orElse(null);
     }
 
@@ -169,7 +182,7 @@ public final class UserManager {
     public  ArrayList<User> getUsersByRoles(Role[] roles, boolean includeAuthUser) {
         ArrayList<User> result = new ArrayList<>();
         for (User user : store.getAll().values()) {
-            if (Arrays.stream(roles).anyMatch(r -> r == user.role)) {
+            if (Arrays.stream(roles).anyMatch(r -> r == user.getRole())) {
                 result.add(user);
             }
         }

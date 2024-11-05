@@ -18,7 +18,7 @@ public class AuthCli extends CLI {
     }
 
     @Override
-    public void addOptions() {
+    protected void addOptions() {
         menu.addOption( "Sign In", AuthCli::signIn);
     }
 
@@ -49,8 +49,8 @@ public class AuthCli extends CLI {
 
         try {
             UserManager.getInstance().signIn(username, password);
-            if (UserManager.getInstance().currentUser != null) {
-                System.out.println("Welcome, " + UserManager.getInstance().currentUser.getName());
+            if (UserManager.getInstance().getCurrentUser() != null) {
+                System.out.println("Welcome, " + UserManager.getInstance().getCurrentUser().getName());
             }
             return true;
         } catch (Exception e) {

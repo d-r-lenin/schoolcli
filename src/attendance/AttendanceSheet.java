@@ -1,9 +1,10 @@
 package attendance;
 
+
 import batch.BatchManager;
 import config.enums.AttStatus;
 import org.jetbrains.annotations.NotNull;
-import users.models.User;
+import users.User;
 import utils.types.ID;
 
 
@@ -20,22 +21,18 @@ public class AttendanceSheet implements Serializable {
     private static final long serialVersionUID = 5L;
 
     //                < UserId -> Attendance >
-    protected final Map<ID<?>, Attendance > sheet = new HashMap<>();
-    protected LocalDate date;
+    protected final Map<ID<?>, Attendance> sheet = new HashMap<>();
+    private LocalDate date;
 
-    public AttendanceSheet(LocalDate date) {
+    AttendanceSheet(LocalDate date) {
         this.date = date;
     }
 
-    public LocalDate getDate() {
-        return date;
-    }
-
-    public void updateAttendance(@NotNull ID<?> userId, AttStatus status, LocalTime inTime){
+    void updateAttendance(@NotNull ID<?> userId, AttStatus status, LocalTime inTime){
         updateAttendance(userId, status, inTime, null);
     }
 
-    public void updateAttendance(@NotNull ID<?> userId, AttStatus status, LocalTime inTime, LocalTime outTime){
+    void updateAttendance(@NotNull ID<?> userId, AttStatus status, LocalTime inTime, LocalTime outTime){
         if( this.sheet.containsKey(userId)){
             this.sheet.get(userId).setStatus(status).setOutTime(outTime);
         } else {
@@ -45,22 +42,19 @@ public class AttendanceSheet implements Serializable {
         this.save();
     }
 
-    public void closeAttendance(ID<?> userId, LocalTime outTime){
+    void closeAttendance(ID<?> userId, LocalTime outTime){
         if( this.sheet.containsKey(userId)){
             this.sheet.get(userId).setOutTime(outTime);
         }
     }
 
 
-    public void deleteAttendance(LocalDate date, @NotNull User user){
+    void deleteAttendance(LocalDate date, @NotNull User user){
        this.sheet.remove(user.getId());
     }
 
-    public Map<ID<?>, Attendance> getSheet() {
-        return this.sheet;
-    }
 
-    public void printSummary(){
+    void printSummary(){
         int present = 0;
         int absent = 0;
         int leave = 0;
@@ -86,7 +80,7 @@ public class AttendanceSheet implements Serializable {
     
 
     // get present count
-    public int getPresentCount() {
+    int getPresentCount() {
         int present = 0;
         for(Attendance attendance: this.sheet.values()){
             if(attendance.getStatus() == AttStatus.PRESENT){
@@ -97,7 +91,7 @@ public class AttendanceSheet implements Serializable {
     }
 
     // get absent count
-    public int getAbsentCount() {
+    int getAbsentCount() {
         int absent = 0;
         for(Attendance attendance: this.sheet.values()){
             if(attendance.getStatus() == AttStatus.ABSENT){
@@ -108,7 +102,7 @@ public class AttendanceSheet implements Serializable {
     }
 
     // get leave count
-    public int getLeaveCount() {
+    int getLeaveCount() {
         int leave = 0;
         for(Attendance attendance: this.sheet.values()){
             if(attendance.getStatus() == AttStatus.LEAVE){
@@ -119,7 +113,7 @@ public class AttendanceSheet implements Serializable {
     }
 
     // get unclosed count
-    public int getUnclosedCount() {
+    int getUnclosedCount() {
         int unclosed = 0;
         for(Attendance attendance: this.sheet.values()){
             if(attendance.getOutTime() == null && attendance.getStatus() == AttStatus.PRESENT){
@@ -130,7 +124,7 @@ public class AttendanceSheet implements Serializable {
     }
 
     // get holidays count
-    public int getHolidaysCount() {
+    int getHolidaysCount() {
         int holidays = 0;
         for(Attendance attendance: this.sheet.values()){
             if(attendance.getStatus() == AttStatus.HOLIDAY){
@@ -141,8 +135,7 @@ public class AttendanceSheet implements Serializable {
     }
 
 
-
-    public void printAttendance() {
+    void printAttendance() {
         System.out.println("Attendance for date: " + date);
         for (Map.Entry<ID<?>, Attendance> entry : sheet.entrySet()) {
             System.out.println(entry.getValue());
@@ -152,7 +145,7 @@ public class AttendanceSheet implements Serializable {
     }
 
 
-    public void printUnclosedAttendance() {
+    void printUnclosedAttendance() {
         System.out.println("Unclosed attendance for date: " + date);
         for (Map.Entry<ID<?>, Attendance> entry : this.getUnclosedAttendance().entrySet()) {
             Attendance attendance = entry.getValue();
@@ -161,7 +154,7 @@ public class AttendanceSheet implements Serializable {
         }
     }
 
-    public Map<ID<?>, Attendance> getUnclosedAttendance() {
+    Map<ID<?>, Attendance> getUnclosedAttendance() {
         Map<ID<?>, Attendance> result = new HashMap<>();
         for (Map.Entry<ID<?>, Attendance> entry : this.sheet.entrySet()) {
             Attendance attendance = entry.getValue();
