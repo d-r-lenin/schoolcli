@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 import users.UserManager;
 import users.User;
 import utils.interfaces.Identifiable;
+import utils.types.ID;
 import utils.types.StringID;
 
 
@@ -25,10 +26,10 @@ public class Batch implements Identifiable, Serializable {
     private final HashSet<User> handledBy = new HashSet<>();
     private final AttendanceBook attendanceBook = new AttendanceBook();
 
-    Batch(String name, User admin){
+    Batch(StringID id, String name, User admin){
         this.handledBy.add(admin);
         this.name = name;
-        this.id = new StringID(BatchManager.getBatchRepo().size() + 1);
+        this.id = id;
     }
 
     @Override
@@ -51,12 +52,12 @@ public class Batch implements Identifiable, Serializable {
 
     void removeStudent(User student){
         this.students.removeIf(studentIn -> studentIn.equals(student) );
-        BatchManager.getBatchRepo().saveData();
+        BatchManager.saveData();
     }
 
     void removeHandledBy(User user){
         this.handledBy.removeIf(userIn -> userIn.equals(user) );
-        BatchManager.getBatchRepo().saveData();
+        BatchManager.saveData();
     }
 
     ArrayList<User> getHandledBy() {
@@ -71,7 +72,7 @@ public class Batch implements Identifiable, Serializable {
         }
         this.students.add(student);
         System.out.println("added user " + student.getUsername());
-        BatchManager.getBatchRepo().saveData();
+        BatchManager.saveData();
     }
 
     void addStudent(ArrayList<User> students){
@@ -80,14 +81,14 @@ public class Batch implements Identifiable, Serializable {
             return;
         }
         this.students.addAll(students);
-        BatchManager.getBatchRepo().saveData();
+        BatchManager.saveData();
     }
 
     void addHandledBy(User user){
         if (user.getRole() == Role.STAFF) {
             this.handledBy.add(user);
             System.out.println("added user " + user.getUsername());
-            BatchManager.getBatchRepo().saveData();
+            BatchManager.saveData();
         }
 
     }
@@ -96,7 +97,7 @@ public class Batch implements Identifiable, Serializable {
         for (User user : users) {
             this.addHandledBy(user);
         }
-        BatchManager.getBatchRepo().saveData();
+        BatchManager.saveData();
     }
 
     ArrayList<User> getNotHandledBy() {

@@ -115,7 +115,7 @@ public class AttendanceSheet implements Serializable {
     }
 
     private void save(){
-        BatchManager.getBatchRepo().saveData();
+        BatchManager.saveData();
         StaffAttendanceManager.staffBookRepo.saveData();
     }
 }
