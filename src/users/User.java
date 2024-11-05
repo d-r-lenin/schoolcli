@@ -11,10 +11,10 @@ public class User implements Authable, Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
-    private final StringID id;
+    public final StringID id;
     private String password;
     private String name;
-    private final String username;
+    protected final String username;
     private final Role role;
 
     protected User(StringID id, String name, String username, String password, Role role) {

@@ -69,7 +69,7 @@ public class FileRepo<T extends Identifiable & Serializable> implements StorageR
         }
     }
 
-    private boolean matchesCriteria(T item, Map<String, Object> criteria) {
+    public boolean matchesCriteria(T item, Map<String, Object> criteria) {
         for (Map.Entry<String, Object> entry : criteria.entrySet()) {
             try {
                 Object value = item.getClass().getDeclaredField(entry.getKey()).get(item);
