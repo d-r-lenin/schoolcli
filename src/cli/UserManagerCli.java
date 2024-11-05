@@ -65,7 +65,7 @@ public class UserManagerCli extends CLI {
         try {
             User user = UserManager.getInstance().createUser(name, username, password, role);
             System.out.println(user);
-        } catch (IllegalAccessException e){
+        } catch (Exception e){
             System.err.println(e.getMessage());
         }
     }

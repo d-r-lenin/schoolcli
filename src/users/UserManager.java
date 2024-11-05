@@ -72,7 +72,7 @@ public final class UserManager {
     private static void createAdmin() {
         if (store.getAll().isEmpty()) {// Assuming no users means no admin exists
             StringID id = new StringID(getCount()+1);
-            User admin = new User(id,"admin", "password", Role.ADMIN);
+            User admin = new User(id,"admin", "Test@123", Role.ADMIN);
             store.put(admin);// Store the admin user using StorageRepo
             System.out.println("Admin setup complete");
         }

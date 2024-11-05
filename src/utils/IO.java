@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.InputMismatchException;
+import java.util.Objects;
 import java.util.Scanner;
 import utils.types.StringID;
 
@@ -38,8 +39,12 @@ public final class IO {
     }
 
     public static String getString(String display) {
-        System.out.print(display);
-        String result =  scanner.nextLine();
+        String result = "";
+        while(true) {
+            System.out.print(display);
+            result = scanner.nextLine();
+            if (!Objects.equals(result, ""))break;
+        }
         return result;
     }
 
