@@ -8,7 +8,6 @@ import config.enums.Role;
 import java.util.*;
 
 
-import store.models.StorageRepo;
 import utils.types.ID;
 import utils.types.StringID;
 
@@ -33,6 +32,7 @@ public final class UserManager {
         }
         return instance;
     }
+
 
     public User getCurrentUser() {
         return currentUser;
@@ -202,7 +202,7 @@ public final class UserManager {
             throw new IllegalAccessException("Old password is incorrect.");
         }
     }
-    
+
     public static void saveData(){
         store.saveData();
     }

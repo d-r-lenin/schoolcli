@@ -10,7 +10,6 @@ public class Main {
         try {
             MainCli cli = new MainCli();
             cli.start();
-
         } catch (Exception e) {
             e.printStackTrace();
         } finally {

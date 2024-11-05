@@ -1,8 +1,7 @@
-package cli.users;
+package users;
 
 import cli.models.CLI;
 import cli.models.menu.Menu;
-import users.UserManager;
 import utils.IO;
 
 public class AuthCli extends CLI {
