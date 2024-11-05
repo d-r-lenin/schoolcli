@@ -46,7 +46,7 @@ public class UserManagerCli extends CLI {
         }
         try {
             um.deleteUser(user.getId());
-            um.getStore().saveData();
+            UserManager.saveData();
         } catch (Exception e){
             System.err.println(e.getMessage());
         }
@@ -90,7 +90,7 @@ public class UserManagerCli extends CLI {
         }
         try {
             UserManager.getInstance().changePassword(oldPassword,newPassword);
-            UserManager.getInstance().getStore().saveData();
+            UserManager.saveData();
         } catch (Exception e){
             System.err.println(e.getMessage());
         }
@@ -118,7 +118,7 @@ public class UserManagerCli extends CLI {
 
         try {
             UserManager.setPassword(user, newPassword);
-            UserManager.getInstance().getStore().saveData();
+            UserManager.saveData();
         } catch (Exception e){
             System.err.println(e.getMessage());
         }

@@ -21,7 +21,7 @@ public final class UserManager {
     }
 
     private static Integer getCount(){
-        return UserManager.getInstance().getStore().size();
+        return UserManager.store.size();
     }
 
     public static UserManager getInstance()
@@ -29,6 +29,7 @@ public final class UserManager {
         if (instance == null) {
             instance = new UserManager();
             createAdmin();
+            createDummyData();
         }
         return instance;
     }
@@ -201,8 +202,35 @@ public final class UserManager {
             throw new IllegalAccessException("Old password is incorrect.");
         }
     }
-
-    public StorageRepo<User> getStore() {
-        return store;
+    
+    public static void saveData(){
+        store.saveData();
     }
+
+    private static void createDummyData() {
+        try {
+            UserManager userManager = UserManager.getInstance();  // Initialize the UserManager singleton
+            String username = "admin";
+            String password = "Test@123";
+            userManager.signIn(username, password);
+
+            if (UserManager.store.size() > 2){
+                return;
+            }
+            // Adding sample users
+            userManager.createUser("Alice", "alice", "Test@123", Role.STAFF);
+            userManager.createUser("Bob", "bob", "Test@123", Role.STUDENT);
+            userManager.createUser("Ric", "ric", "Test@123", Role.STUDENT);
+            userManager.createUser("Charlie", "charlie", "Test@123", Role.STAFF);
+
+            System.out.println("Dummy data created successfully.");
+            userManager.showUsers();
+            userManager.signOut();
+        } catch (Exception e) {
+            System.err.println("Error creating dummy data: " + e.getMessage());
+        }
+    }
+
+
+
 }
