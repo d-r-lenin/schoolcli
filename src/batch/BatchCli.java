@@ -43,7 +43,7 @@ public class BatchCli extends CLI {
 
 
 
-    public static void showStudents(){
+    static void showStudents(){
         BatchManager.showBatches();
         Batch batch = batchInput();
         if(batch == null){
@@ -59,7 +59,7 @@ public class BatchCli extends CLI {
         return batch.orElse(null);
     }
 
-    public static void addBatch(){
+    static void addBatch(){
         String name = IO.getString("Enter batch Name:");
         try {
             BatchManager.createBatch(name);
@@ -68,7 +68,7 @@ public class BatchCli extends CLI {
         }
     }
 
-    public static void addStudent(){
+    static void addStudent(){
         BatchManager.showBatches();
         Batch batch = BatchCli.batchInput();
         if(batch ==null){
@@ -85,14 +85,14 @@ public class BatchCli extends CLI {
             return;
         }
         if(student.getRole() != Role.STUDENT){
-            System.err.println("User Not a User");
+            System.err.println("User Not a Student");
             return;
         }
 
         BatchManager.addStudent(batch, student);
     }
 
-    public static void removeStudent(){
+    static void removeStudent(){
         Batch batch = BatchCli.batchInput();
         if(batch ==null){
             System.err.println("Invalid Batch id...");
@@ -113,7 +113,7 @@ public class BatchCli extends CLI {
         BatchManager.removeStudent(batch, student);
     }
 
-    public static void addHandledBy(){
+    static void addHandledBy(){
         BatchManager.showBatches();
         Batch batch = BatchCli.batchInput();
         if(batch ==null){
@@ -134,7 +134,7 @@ public class BatchCli extends CLI {
         BatchManager.addHandledBy(batch, user);
     }
 
-    public static void removeHandledBy(){
+    static void removeHandledBy(){
         BatchManager.showBatches();
         Batch batch = BatchCli.batchInput();
         if(batch ==null){

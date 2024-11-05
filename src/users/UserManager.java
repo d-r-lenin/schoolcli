@@ -109,7 +109,7 @@ public final class UserManager {
         // removing from any batch also
         List<Batch> batches = BatchManager.getBatches();
         for (Batch batch : batches) {
-            if (batch.getStudents().contains(user)) {
+            if (batch.hasStudent(user)) {
                 BatchManager.removeStudent(batch, user);
 
                 BatchManager.deleteAttendance(batch, user);

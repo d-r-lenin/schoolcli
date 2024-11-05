@@ -68,8 +68,7 @@ public class User implements Authable, Serializable {
                     id=%s,
                     name='%s',
                     username='%s',
-                    role=%s
-                """.formatted(role, id, name, username, role);
+                    role=%s""".formatted(role, id, name, username, role);
     }
 
     @Override

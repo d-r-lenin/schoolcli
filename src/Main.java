@@ -1,7 +1,4 @@
-
 import cli.MainCli;
-import config.enums.Role;
-import users.UserManager;
 import utils.IO;
 
 public class Main {

@@ -32,6 +32,7 @@ public class StaffAttendanceCli extends CLI {
             this.menu.addOption("Show Attendance", StaffAttendanceCli::showAttendance);
             this.menu.addOption("Take Attendance", StaffAttendanceCli::takeAttendance);
             this.menu.addOption("Close Attendance", StaffAttendanceCli::closeAttendance);
+            this.menu.addOption("Attendance Summary", StaffAttendanceCli::showAttendanceSummary);
         }
     }
 
@@ -87,11 +88,10 @@ public class StaffAttendanceCli extends CLI {
     }
 
 
-    public static void showAttendanceSummary() {
-        AttendanceBook book = null;
+    private static void showAttendanceSummary() {
+        AttendanceBook book;
 
         book = StaffAttendanceManager.getStaffBook();
-
 
         if (book == null) {
             System.err.println("No data found");
@@ -105,19 +105,14 @@ public class StaffAttendanceCli extends CLI {
                 LocalDate date = IO.getLocalDate("Enter Date:");
                 book.printSummary(date);
             }
-            case 2 ->{
-                book.printSummary();
-            }
+            case 2 -> book.printSummary();
             case 3 -> {
                 UserManager.getInstance().showUsers(new Role[]{Role.STAFF});
-
 
                 StringID userId = IO.getStringId("Enter UserId:");
                 book.printSummary(userId);
             }
-            default -> {
-                System.err.println("Invalid Option...");
-            }
+            default -> System.err.println("Invalid Option...");
         }
 
 
