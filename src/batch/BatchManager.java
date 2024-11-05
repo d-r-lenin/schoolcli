@@ -1,7 +1,6 @@
 package batch;
 
-import attendance.AttendanceSheet;
-import attendance.StaffAttendanceManager;
+import attendance.StudentAttendanceManager;
 import config.enums.AttStatus;
 import config.enums.Role;
 
@@ -18,7 +17,7 @@ import utils.types.StringID;
 
 
 public final class BatchManager {
-    private BatchManager(){};
+    private BatchManager(){}
 
     private static final HashMap<ID<?>, Batch> batches = new HashMap<>();
     private static final StorageRepo<Batch> batchRepo = new BatchRepo();
@@ -51,14 +50,6 @@ public final class BatchManager {
     }
 
 
-
-    public static Map<ID<?>, Batch> getBatchesMap() {
-        Map<ID<?>, Batch> result = new HashMap<>();
-        for(Batch batch: getBatches()){
-            result.put(batch.getId(), batch);
-        }
-        return result;
-    }
 
 
     public static void addBatch(Batch batch){
@@ -129,6 +120,7 @@ public final class BatchManager {
     }
 
     public static void removeHandledBy(Batch batch, User user) {
+        if (!validateAuthUser()) return;
         batch.removeHandledBy(user);
     }
 
@@ -137,34 +129,41 @@ public final class BatchManager {
     }
 
     private static boolean validateAuthUser(Batch batch){
-        return validateAuthUser() && batch.hasStaff(UserManager.getInstance().getCurrentUser());
+        return validateAuthUser() || batch.hasStaff(UserManager.getInstance().getCurrentUser());
     }
 
+
     public static void deleteAttendance(Batch batch, User user) {
-        batch.getAttendanceBook().deleteAttendance(user);
+        if (!validateAuthUser(batch)) return;
+        StudentAttendanceManager.deleteAttendance(batch.getAttendanceBook(), user);
     }
 
     public static void printUnclosedAttendance(Batch batch, LocalDate date) {
+        if (!validateAuthUser(batch)) return;
         batch.printUnclosedAttendance(date);
     }
 
     public static void closeAttendance(Batch batch, LocalDate date, StringID userId, LocalTime outTime) {
-        batch.getAttendanceBook().closeAttendance(date, userId, outTime);
+        if (!validateAuthUser(batch)) return;
+        StudentAttendanceManager.closeAttendance(batch.getAttendanceBook(),date, userId, outTime);
     }
 
     public static void showMyAttendance(Batch batch){
-        batch.getAttendanceBook().printAttendanceForUser(UserManager.getInstance().getCurrentUser().getId());
+        StudentAttendanceManager.showMyAttendance(batch.getAttendanceBook());
     }
 
     public static void updateAttendance(Batch batch, LocalDate date, StringID userId, AttStatus status, LocalTime inTime) {
+        if (!validateAuthUser(batch)) return;
         batch.getAttendanceBook().updateAttendance(date,userId,status,inTime);
     }
 
     public static void printAttendanceForUser(Batch batch, StringID userId) {
-        batch.getAttendanceBook().printAttendanceForUser(userId);
+        if (!validateAuthUser(batch)) return;
+        StudentAttendanceManager.printAttendanceForUser(batch.getAttendanceBook(),userId);
     }
 
-    public static void addStudent(Batch batch, User student) {
+    static void addStudent(Batch batch, User student) {
+        if (!validateAuthUser()) return;
         batch.addStudent(student);
     }
 }

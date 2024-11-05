@@ -1,6 +1,7 @@
 package batch;
 
 import attendance.AttendanceBook;
+import attendance.StudentAttendanceManager;
 import config.enums.Role;
 import java.io.Serial;
 import java.io.Serializable;
@@ -19,7 +20,7 @@ public class Batch implements Identifiable, Serializable {
     private static final long serialVersionUID = 3L;
 
     private final StringID id;
-    protected String name;
+    String name;
     private final HashSet<User> students =  new HashSet<>();
     private final HashSet<User> handledBy = new HashSet<>();
     private final AttendanceBook attendanceBook = new AttendanceBook();
@@ -35,13 +36,10 @@ public class Batch implements Identifiable, Serializable {
         return id;
     }
 
-    protected AttendanceBook getAttendanceBook() {
+    AttendanceBook getAttendanceBook() {
         return attendanceBook;
     }
 
-    protected String getIdString() {
-        return id.getValue();
-    }
 
     public String getName() {
         return name;
@@ -147,6 +145,6 @@ public class Batch implements Identifiable, Serializable {
     }
 
     void printUnclosedAttendance(LocalDate date) {
-       this.attendanceBook.printUnclosedAttendance(date);
+        StudentAttendanceManager.printUnclosedAttendance(attendanceBook,date);
     }
 }
