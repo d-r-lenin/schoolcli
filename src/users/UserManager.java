@@ -3,6 +3,7 @@ package users;
 import attendance.StaffAttendanceManager;
 import batch.Batch;
 import batch.BatchManager;
+import cli.models.CLI;
 import config.enums.Role;
 
 import java.util.*;
@@ -32,6 +33,20 @@ public final class UserManager {
         return instance;
     }
 
+
+    public CLI getCli() {
+        CLI cli = null;
+
+        if (isNotLoggedIn()) return null;
+
+        switch (UserManager.getInstance().getCurrentUser().getRole()) {
+            case STUDENT -> cli = new StudentCli();
+            case STAFF -> cli = new StaffCli();
+            case ADMIN -> cli = new AdminCli();
+            default -> System.err.println("Invalid Role found!!");
+        }
+        return cli;
+    }
 
     public User getCurrentUser() {
         return currentUser;

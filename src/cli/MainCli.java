@@ -1,32 +1,29 @@
 package cli;
 
 
+import cli.models.CLI;
 import users.*;
 
 public class MainCli {
-    AuthCli authCli = new AuthCli();
-    StudentCli studentCli = new StudentCli();
-    StaffCli staffCli = new StaffCli();
-    AdminCli adminCli = new AdminCli();
-
-
     public boolean start() {
-        boolean isExits = false;
+        CLI authCli = new AuthCli();
+        CLI cli;
 
-        while (!isExits) {
-            isExits = authCli.start();
-            if (isExits) break;
+        while (true) {
+            // exit if return true
+            if(authCli.start()) break;
 
             if (UserManager.getInstance().isNotLoggedIn()) continue;
 
-            switch (UserManager.getInstance().getCurrentUser().getRole()) {
-                case STUDENT -> isExits = studentCli.start();
-                case STAFF -> isExits = staffCli.start();
-                case ADMIN -> isExits = adminCli.start();
-            }
+            cli = UserManager.getInstance().getCli();
+            if (cli == null) return true;
+
+            if (cli.start()) break;
         }
+
         return true;
     }
+
 
 
 }
