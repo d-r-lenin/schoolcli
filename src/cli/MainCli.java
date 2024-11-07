@@ -13,8 +13,6 @@ public class MainCli {
             // exit if return true
             if(authCli.start()) break;
 
-            if (UserManager.getInstance().isNotLoggedIn()) continue;
-
             cli = UserManager.getInstance().getCli();
             if (cli == null) return true;
 
